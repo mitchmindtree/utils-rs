@@ -1,0 +1,5 @@
+[package]
+
+name = "utils"
+version = "0.0.1"
+authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
