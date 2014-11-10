@@ -6,14 +6,15 @@
 //!  A collection of custom iterators for iterating things!
 //!
 
-pub use prev_iter::ZipPrev;
+pub use self::prev_iter::ZipPrev;
 
 pub mod prev_iter {
 
     /// A trait that produces the previous step's element along
     /// with the current step.
-    pub trait ZipPrev: Iterator {
-        fn zip_prev(self) -> PairIterator;
+    pub trait ZipPrev<A, I>: Iterator<A>
+    where A: Clone, I: Iterator<A> {
+        fn zip_prev(self) -> PairIterator<A, I>;
     }
 
     /// A struct produced by the ZipPrevious iterator.
@@ -26,18 +27,19 @@ pub mod prev_iter {
     where A: Clone, I: Iterator<A> {
         #[inline]
         fn next(&mut self) -> Option<(A, Option<A>)> {
-            let PairIterator(ref mut part_iter, ref mut maybe_prev) = *self;
-            if let Some(part) = self.part_iter.next() {
-                let maybe_prev = self.maybe_prev.clone();
-                self.maybe_prev = Some(part);
-                Some(part, maybe_prev)
+            let PairIterator { ref mut iter, ref mut maybe_prev } = *self;
+            if let Some(item) = iter.next() {
+                let maybe_prev_clone = maybe_prev.clone();
+                *maybe_prev = Some(item.clone());
+                Some((item, maybe_prev_clone))
             } else {
                 None
             }
         }
     }
 
-    impl<A, I> ZipPrev for I where A: Clone, I: Iterator<A> {
+    impl<A, I> ZipPrev<A, I> for I
+    where A: Clone, I: Iterator<A> {
         fn zip_prev(self) -> PairIterator<A, I> {
             PairIterator {
                 iter: self,

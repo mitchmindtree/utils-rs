@@ -9,14 +9,48 @@ use std::mem;
 use std::num::One;
 use std::num::zero;
 
-/// The modulo function.
+/// Clamp a value to a range.
 #[inline]
-pub fn modulo<I: Int>(a: I, b: I) -> I {
-    match a % b {
-        r if (r > zero() && b < zero())
-          || (r < zero() && b > zero()) => (r + b),
-        r                               => r,
+pub fn clamp<T: Num + Primitive>(val: T, min: T, max: T) -> T {
+    if val < min { min } else { if val > max { max } else { val } }
+}
+
+/// Floors value.
+#[inline]
+pub fn fast_floor<F: Float + FromPrimitive + ToPrimitive>(f: F) -> int {
+    return if f > FromPrimitive::from_int(0).unwrap() {
+        f.to_int().unwrap()
+    } else {
+        f.to_int().unwrap() - One::one()
     }
+}
+
+/// Models the CPP fmod function.
+#[inline]
+pub fn fmod<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> F {
+    let rquot: F = (numer / denom).floor();
+    numer - rquot * denom
+}
+
+/// Implementation of grad1 for the ported _slang_library_noise1 method
+#[inline]
+pub fn grad1(hash: int, x: f32) -> f32 {
+    let h: int = hash & 15;
+    let mut grad: f32 = 1.0f32 + ((h & 7) as f32);
+    if h & 8 > 0 { grad = (-1.0f32) * grad; }
+    grad * x
+}
+
+/// Check if value is in range.
+#[inline]
+pub fn in_range<T: Num + Primitive>(val: T, min: T, max: T) -> bool {
+    val >= min && val <= max
+}
+
+/// Interpolate from start to stop 'amt' amount.
+#[inline]
+pub fn lerp(start: f32, stop: f32, amt: f32) -> f32 {
+    start + (stop - start) * amt
 }
 
 /// Map a value from a given range to a new given range.
@@ -41,22 +75,21 @@ pub fn map_range<X: Num + Copy + FromPrimitive + ToPrimitive,
     ).unwrap()
 }
 
-/// Clamp a value to a range.
+/// Models the CPP remainder function.
 #[inline]
-pub fn clamp<T: Num + Primitive>(val: T, min: T, max: T) -> T {
-    if val < min { min } else { if val > max { max } else { val } }
+pub fn remainder<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> F {
+    let rquot: F = (numer / denom).round();
+    numer - rquot * denom
 }
 
-/// Check if value is in range.
+/// The modulo function.
 #[inline]
-pub fn in_range<T: Num + Primitive>(val: T, min: T, max: T) -> bool {
-    val >= min && val <= max
-}
-
-/// Interpolate from start to stop 'amt' amount.
-#[inline]
-pub fn lerp(start: f32, stop: f32, amt: f32) -> f32 {
-    start + (stop - start) * amt
+pub fn modulo<I: Int>(a: I, b: I) -> I {
+    match a % b {
+        r if (r > zero() && b < zero())
+          || (r < zero() && b > zero()) => (r + b),
+        r                               => r,
+    }
 }
 
 /// Wrap value to a range.
@@ -66,39 +99,6 @@ pub fn wrap(val: f32, mut from: f32, mut to: f32) -> f32 {
     let cycle = to - from;
     if cycle == 0.0 { return to; }
     val - cycle * ((val - from) / cycle).floor()
-}
-
-/// Floors value.
-#[inline]
-pub fn fast_floor<F: Float + FromPrimitive + ToPrimitive>(f: F) -> int {
-    return if f > FromPrimitive::from_int(0).unwrap() {
-        f.to_int().unwrap()
-    } else {
-        f.to_int().unwrap() - One::one()
-    }
-}
-
-/// Models the CPP remainder function.
-#[inline]
-pub fn remainder<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> F {
-    let rquot: F = (numer / denom).round();
-    numer - rquot * denom
-}
-
-/// Models the CPP fmod function.
-#[inline]
-pub fn fmod<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> F {
-    let rquot: F = (numer / denom).floor();
-    numer - rquot * denom
-}
-
-/// Implementation of grad1 for the ported _slang_library_noise1 method
-#[inline]
-pub fn grad1(hash: int, x: f32) -> f32 {
-    let h: int = hash & 15;
-    let mut grad: f32 = 1.0f32 + ((h & 7) as f32);
-    if h & 8 > 0 { grad = (-1.0f32) * grad; }
-    grad * x
 }
 
 /// Implementation of perm for the ported _slang_library_noise1 method
