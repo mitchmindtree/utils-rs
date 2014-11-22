@@ -6,36 +6,38 @@
 ///
 
 use std::mem;
-use std::num::One;
-use std::num::zero;
+use std::num::{
+    Float,
+    Int,
+};
 
 /// Clamp a value to a range.
 #[inline]
-pub fn clamp<T: Num + Primitive>(val: T, min: T, max: T) -> T {
+pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
     if val < min { min } else { if val > max { max } else { val } }
 }
 
 /// Floors value.
 #[inline]
-pub fn fast_floor<F: Float + FromPrimitive + ToPrimitive>(f: F) -> int {
+pub fn fast_floor<F: Float + FromPrimitive + ToPrimitive>(f: F) -> i64 {
     return if f > FromPrimitive::from_int(0).unwrap() {
-        f.to_int().unwrap()
+        f.to_i64().unwrap()
     } else {
-        f.to_int().unwrap() - One::one()
+        f.to_i64().unwrap() - Int::one()
     }
 }
 
 /// Models the CPP fmod function.
 #[inline]
-pub fn fmod<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> F {
+pub fn fmod<F: Float>(numer: F, denom: F) -> F {
     let rquot: F = (numer / denom).floor();
     numer - rquot * denom
 }
 
 /// Implementation of grad1 for the ported _slang_library_noise1 method
 #[inline]
-pub fn grad1(hash: int, x: f32) -> f32 {
-    let h: int = hash & 15;
+pub fn grad1(hash: i64, x: f32) -> f32 {
+    let h: i64 = hash & 15;
     let mut grad: f32 = 1.0f32 + ((h & 7) as f32);
     if h & 8 > 0 { grad = (-1.0f32) * grad; }
     grad * x
@@ -43,7 +45,7 @@ pub fn grad1(hash: int, x: f32) -> f32 {
 
 /// Check if value is in range.
 #[inline]
-pub fn in_range<T: Num + Primitive>(val: T, min: T, max: T) -> bool {
+pub fn in_range<T: Ord>(val: T, min: T, max: T) -> bool {
     val >= min && val <= max
 }
 
@@ -55,8 +57,8 @@ pub fn lerp(start: f32, stop: f32, amt: f32) -> f32 {
 
 /// Map a value from a given range to a new given range.
 #[inline]
-pub fn map_range<X: Num + Copy + FromPrimitive + ToPrimitive,
-                 Y: Num + Copy + FromPrimitive + ToPrimitive>
+pub fn map_range<X: Copy + FromPrimitive + ToPrimitive,
+                 Y: Copy + FromPrimitive + ToPrimitive>
     (val: X, in_min: X, in_max: X, out_min: Y, out_max: Y) -> Y {
     let (val_f, in_min_f, in_max_f, out_min_f, out_max_f) = (
         val.to_f64().unwrap(),
@@ -86,9 +88,9 @@ pub fn remainder<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> 
 #[inline]
 pub fn modulo<I: Int>(a: I, b: I) -> I {
     match a % b {
-        r if (r > zero() && b < zero())
-          || (r < zero() && b > zero()) => (r + b),
-        r                               => r,
+        r if (r > Int::zero() && b < Int::zero())
+          || (r < Int::zero() && b > Int::zero()) => (r + b),
+        r                                         => r,
     }
 }
 
