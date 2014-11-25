@@ -17,7 +17,11 @@ pub use factorisation::{
     lowest_non_one,
     get_all_factors,
 };
-pub use gaussian::Gaussian;
+pub use gaussian::{
+    gen,
+    gen_map,
+    gen_raw,
+};
 pub use iter::{
     ZipPrev,
 };
