@@ -7,6 +7,8 @@
 
 #![feature(if_let)]
 
+extern crate serialize;
+
 pub use factorisation::{
     is_factor,
     are_any_factors,
@@ -15,6 +17,7 @@ pub use factorisation::{
     lowest_non_one,
     get_all_factors,
 };
+pub use gaussian::Gaussian;
 pub use iter::{
     ZipPrev,
 };
@@ -35,6 +38,7 @@ pub use vec::{
 };
 
 pub mod factorisation;
+pub mod gaussian;
 pub mod iter;
 pub mod math;
 pub mod vec;
