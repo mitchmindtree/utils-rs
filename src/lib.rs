@@ -17,11 +17,6 @@ pub use factorisation::{
     lowest_non_one,
     get_all_factors,
 };
-pub use gaussian::{
-    gen,
-    gen_map,
-    gen_raw,
-};
 pub use iter::{
     ZipPrev,
 };
@@ -37,6 +32,9 @@ pub use math::{
     remainder,
     wrap,
 };
+pub use signal::{
+    Signal,
+};
 pub use vec::{
     TakeOnly,
 };
@@ -45,5 +43,6 @@ pub mod factorisation;
 pub mod gaussian;
 pub mod iter;
 pub mod math;
+pub mod signal;
 pub mod vec;
 
