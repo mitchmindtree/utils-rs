@@ -11,7 +11,7 @@ use math;
 
 /// Signal generic struct for simplifying dsp signal generation.
 /// Signal should be able to handle any floating point primitive.
-#[deriving(Clone, Show, Encodable, Decodable)]
+#[deriving(Copy, Clone, Show, RustcEncodable, RustcDecodable)]
 pub struct Signal<F> {
     /// The main value. If Signal were to be plotted on a cartesian
     /// plane, this value would be 'x' for which we will solve 'y'.
@@ -42,6 +42,31 @@ fn times_two_pi<F>(f: F) -> F where F: FloatMath + FromPrimitive {
 fn get_rand_signal<F: FloatMath + rand::Rand + FromPrimitive>() -> F {
     let r: F = rand::random();
     r * FromPrimitive::from_f32(2.0).unwrap() - FromPrimitive::from_f32(1.0).unwrap()
+}
+
+/// Ported implementation of `_slang_library_noise1()` for our generic noise walk!
+#[inline]
+pub fn noise_walk<F: FloatMath + FromPrimitive>(phase: F) -> F {
+    let uno: F = Float::one();
+    let i0: i64 = math::fast_floor(phase);
+    let i1: i64 = i0 + 1;
+    let x0: F = phase - FromPrimitive::from_i64(i0).unwrap();
+    let x1: F = x0 - uno;
+    let x12d: F = x1 * x1;
+    let x02d: F = x0 * x0;
+    let t1: F = uno - x12d;        
+    let t0: F = uno - x02d;
+    let t0a: F = t0 * t0;
+    let g1: f32 = math::grad1(
+        math::get_perm_val((i0 & 0xff) as uint) as i64, x0.to_f32().unwrap());
+    let n0: F = t0a * t0a * FromPrimitive::from_f32(g1).unwrap(); 
+    let t1a: F = t1 * t1;
+    let g2: f32 = math::grad1(
+        math::get_perm_val((i1 & 0xff) as uint) as i64, x1.to_f32().unwrap());
+    let n1: F = t1a * t1a * FromPrimitive::from_f32(g2).unwrap();
+    let n0pn1: F = n0 + n1;
+    let quarter: F = FromPrimitive::from_f32(0.25f32).unwrap();
+    quarter * n0pn1
 }
 
 impl<F: FloatMath + rand::Rand + FromPrimitive + ToPrimitive> Signal<F> {
@@ -156,26 +181,7 @@ impl<F: FloatMath + rand::Rand + FromPrimitive + ToPrimitive> Signal<F> {
     /// for our generic noise walk!
     #[inline]
     pub fn get_noise_walk(&self) -> F {
-        let uno: F = Float::one();
-        let i0: i64 = math::fast_floor(self.val);
-        let i1: i64 = i0 + 1;
-        let x0: F = self.val - FromPrimitive::from_i64(i0).unwrap();
-        let x1: F = x0 - uno;
-        let x12d: F = x1 * x1;
-        let x02d: F = x0 * x0;
-        let t1: F = uno - x12d;        
-        let t0: F = uno - x02d;
-        let t0a: F = t0 * t0;
-        let g1: f32 = math::grad1(
-            math::get_perm_val((i0 & 0xff) as uint) as i64, x0.to_f32().unwrap());
-        let n0: F = t0a * t0a * FromPrimitive::from_f32(g1).unwrap(); 
-        let t1a: F = t1 * t1;
-        let g2: f32 = math::grad1(
-            math::get_perm_val((i1 & 0xff) as uint) as i64, x1.to_f32().unwrap());
-        let n1: F = t1a * t1a * FromPrimitive::from_f32(g2).unwrap();
-        let n0pn1: F = n0 + n1;
-        let quarter: F = FromPrimitive::from_f32(0.25f32).unwrap();
-        quarter * n0pn1
+        noise_walk(self.val)
     }
 
 }

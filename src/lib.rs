@@ -5,10 +5,10 @@
 //!
 //!
 
-#![feature(if_let)]
+extern crate "rustc-serialize" as rustc_serialize;
 
-extern crate serialize;
-
+pub use envelope::Envelope;
+pub use envelope::Point as EnvPoint;
 pub use factorisation::{
     is_factor,
     are_any_factors,
@@ -33,12 +33,14 @@ pub use math::{
     wrap,
 };
 pub use signal::{
+    noise_walk,
     Signal,
 };
 pub use vec::{
     TakeOnly,
 };
 
+pub mod envelope;
 pub mod factorisation;
 pub mod gaussian;
 pub mod iter;
