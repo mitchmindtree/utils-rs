@@ -5,10 +5,17 @@
 //!
 //!
 
+#![feature(core, io, rand, std_misc)]
+
 extern crate "rustc-serialize" as rustc_serialize;
+extern crate time;
 
 pub use envelope::Envelope;
 pub use envelope::Point as EnvPoint;
+pub use epsilon::{
+    Epsilon,
+    epsilon,
+};
 pub use factorisation::{
     is_factor,
     are_any_factors,
@@ -17,7 +24,11 @@ pub use factorisation::{
     lowest_non_one,
     get_all_factors,
 };
+pub use fps::{
+    Fps,
+};
 pub use iter::{
+    SampleOn,
     ZipPrev,
 };
 pub use math::{
@@ -41,7 +52,9 @@ pub use vec::{
 };
 
 pub mod envelope;
+pub mod epsilon;
 pub mod factorisation;
+pub mod fps;
 pub mod gaussian;
 pub mod iter;
 pub mod math;

@@ -7,7 +7,7 @@
 
 use math::map_range;
 use std::fmt::Show;
-use std::num::Float;
+use std::num::{Float, FromPrimitive};
 use std::rand::{Rand, random};
 
 static mut NEXT_VALUE: Option<f64> = None;
@@ -42,7 +42,7 @@ pub fn gen_raw<F>() -> F where F: Float + FromPrimitive + Rand {
 pub fn gen<F>(n: F, randomness: f32) -> F
 where F: Float + Rand + FromPrimitive + Show {
     let (zero, one): (F, F) = (Float::zero(), Float::one());
-    assert!(n >= zero && n <= one, "Gaussian::gen : given `n` ({}) must \
+    assert!(n >= zero && n <= one, "Gaussian::gen : given `n` ({:?}) must \
             be a percentage between 0 and 1.", n);
     let mut ans = gen_raw::<F>()
                 * FromPrimitive::from_f32(randomness.powf(2.0)).unwrap()

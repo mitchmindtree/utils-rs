@@ -8,7 +8,9 @@
 use std::mem;
 use std::num::{
     Float,
+    FromPrimitive,
     Int,
+    ToPrimitive,
 };
 
 /// Clamp a value to a range.
@@ -60,6 +62,7 @@ pub fn lerp(start: f32, stop: f32, amt: f32) -> f32 {
 pub fn map_range<X: Copy + FromPrimitive + ToPrimitive,
                  Y: Copy + FromPrimitive + ToPrimitive>
     (val: X, in_min: X, in_max: X, out_min: Y, out_max: Y) -> Y {
+    use epsilon::epsilon;
     let (val_f, in_min_f, in_max_f, out_min_f, out_max_f) = (
         val.to_f64().unwrap(),
         in_min.to_f64().unwrap(),
@@ -67,7 +70,7 @@ pub fn map_range<X: Copy + FromPrimitive + ToPrimitive,
         out_min.to_f64().unwrap(),
         out_max.to_f64().unwrap(),
     );
-    if (in_min_f - in_max_f).abs() < Float::epsilon() {
+    if (in_min_f - in_max_f).abs() < epsilon() {
         println!("jmath Warning: map(): avoiding possible divide by zero, \
                  in_min ({}) and in_max({})", in_min_f, in_max_f);
         return out_min;
@@ -104,7 +107,7 @@ pub fn wrap(val: f32, mut from: f32, mut to: f32) -> f32 {
 }
 
 /// Implementation of perm for the ported _slang_library_noise1 method
-const PERM : [u8, ..512] = [151u8, 160u8, 137u8, 91u8, 90u8, 15u8,
+const PERM : [u8; 512] = [151u8, 160u8, 137u8, 91u8, 90u8, 15u8,
       131u8, 13u8, 201u8,95u8,96u8,53u8,194u8,233u8,7u8,225u8,140u8,36u8,103u8,30u8,69u8,142u8,8u8,99u8,37u8,240u8,21u8,10u8,23u8,
       190u8, 6u8,148u8,247u8,120u8,234u8,75u8,0u8,26u8,197u8,62u8,94u8,252u8,219u8,203u8,117u8,35u8,11u8,32u8,57u8,177u8,33u8,
       88u8,237u8,149u8,56u8,87u8,174u8,20u8,125u8,136u8,171u8,168u8, 68u8,175u8,74u8,165u8,71u8,134u8,139u8,48u8,27u8,166u8,
@@ -132,5 +135,5 @@ const PERM : [u8, ..512] = [151u8, 160u8, 137u8, 91u8, 90u8, 15u8,
       138u8,236u8,205u8,93u8,222u8,114u8,67u8,29u8,24u8,72u8,243u8,141u8,128u8,195u8,78u8,66u8,215u8,61u8,156u8,180u8];
 
 /// Implementation of perm lookup for the ported _slang_library_noise1 method
-pub fn get_perm_val(i: uint) -> u8 { PERM[i] }
+pub fn get_perm_val(i: usize) -> u8 { PERM[i] }
 
