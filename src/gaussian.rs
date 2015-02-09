@@ -6,9 +6,9 @@
 //!
 
 use math::map_range;
+use rand::{Rand, random};
 use std::fmt::Show;
 use std::num::{Float, FromPrimitive};
-use std::rand::{Rand, random};
 
 static mut NEXT_VALUE: Option<f64> = None;
 

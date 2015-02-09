@@ -6,7 +6,7 @@
 //!
 
 use std::num::{Float, FromPrimitive, ToPrimitive};
-use std::rand;
+use rand;
 use math;
 
 /// Signal generic struct for simplifying dsp signal generation.

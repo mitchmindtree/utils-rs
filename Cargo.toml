@@ -5,7 +5,8 @@ version = "0.0.1"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 
 [dependencies]
-rustc-serialize = "0.2.10"
+rand = "0.1.2"
+rustc-serialize = "0.2.12"
 
 [dependencies.time]
 git = "https://github.com/rust-lang/time"

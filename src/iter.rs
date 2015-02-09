@@ -53,6 +53,8 @@ pub mod prev_iter {
 pub mod sample_on {
 
     /// Sample from the current iterator every time an iteration occurs on another iterator.
+    /// This is primarily used for binding an iterator to another timed iterator. i.e.
+    /// `(0..1000).sample_on(Fps::new(60.0))`.
     pub trait SampleOn: Sized + Iterator {
         #[inline]
         fn sample_on<O: Iterator>(self, other: O) -> Items<Self, O> {

@@ -85,25 +85,81 @@ impl<P> Envelope<P> where P: Point, <P as Point>::F: Float {
     /// Interpolate between points.
     #[inline]
     fn interpolate(&self, x: <P as Point>::F, start: P, end: P) -> <P as Point>::F {
+
+        // NOTE: Temporary fix for assoc types weirdness... Remove when possible!
+        fn temp_add<T: Float>(a: T, b: T) -> T { a + b }
+        fn temp_sub<T: Float>(a: T, b: T) -> T { a - b }
+        fn temp_mul<T: Float>(a: T, b: T) -> T { a * b }
+        fn temp_div<T: Float>(a: T, b: T) -> T { a / b }
+
         // Find x passed from start of interpolation.
-        let x_pos = x - start.x();
+        //let x_pos = x - start.x();
+        let x_pos = temp_sub(x, start.x());
+
         // Find duration of interpolation.
-        let duration = end.x() - start.x();
+        //let duration = end.x() - start.x();
+        let duration = temp_sub(end.x(), start.x());
+
         // Set gradient for interpolation.
-        let gradient_y = end.y() - start.y();
+        //let gradient_y: <P as Point>::F = end.y() - start.y();
+        let gradient_y = temp_sub(end.y(), start.y());
+
         if gradient_y == Float::zero() { return start.y() }
         //let gradient = duration / gradient_y;
-        let half_gradient_y = gradient_y / two();
+
+        //let half_gradient_y: <P as Point>::F = gradient_y / two();
+        let half_gradient_y = temp_div(gradient_y, two());
+
         // Consider bezier curve.
-        let y2 = half_gradient_y + start.curve() * half_gradient_y;
-        let perc_x = x_pos / duration;
+        //let y2 = half_gradient_y + start.curve() * half_gradient_y;
+        let y2 = temp_add(half_gradient_y, temp_mul(start.curve(), half_gradient_y));
+
+        //let perc_x = x_pos / duration;
+        let perc_x = temp_div(x_pos, duration);
+
+
         // Re-adjust linear trajectory.
         let ya = bezier_pt(Float::zero(), y2, perc_x);
         let yb = bezier_pt(y2, gradient_y, perc_x);
-        bezier_pt(ya, yb, perc_x) + start.y()
+
+        //bezier_pt(ya, yb, perc_x) + start.y()
+        temp_add(bezier_pt(ya, yb, perc_x), start.y())
     }
 
 }
+
+// /// Interpolate between two points and return y for the given x.
+// #[inline]
+// fn interpolate<P>(x: <P as Point>::F, start: P, end: P) -> <P as Point>::F
+//     where
+//         P: Point,
+//         <P as Point>::F: Float,
+// {
+// 
+//     // Find x passed from start of interpolation.
+//     let x_pos = x - start.x();
+// 
+//     // Find duration of interpolation.
+//     let duration = end.x() - start.x();
+// 
+//     // Set gradient for interpolation.
+//     let gradient_y = end.y() - start.y();
+// 
+//     // If there is no gradient between the points, simply return y from one of the points.
+//     if gradient_y == Float::zero() { return start.y() }
+// 
+//     let half_gradient_y: <P as Point>::F = gradient_y / two();
+// 
+//     // Consider bezier curve.
+//     let y2 = half_gradient_y + start.curve() * half_gradient_y;
+//     let perc_x = x_pos / duration;
+// 
+//     // Re-adjust linear trajectory.
+//     let ya = bezier_pt(Float::zero(), y2, perc_x);
+//     let yb = bezier_pt(y2, gradient_y, perc_x);
+// 
+//     bezier_pt(ya, yb, perc_x) + start.y()
+// }
 
 /// Get bezier point for bezier curve.
 #[inline]
