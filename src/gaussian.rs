@@ -7,7 +7,7 @@
 
 use math::map_range;
 use rand::{Rand, random};
-use std::fmt::Show;
+use std::fmt::Debug;
 use std::num::{Float, FromPrimitive};
 
 static mut NEXT_VALUE: Option<f64> = None;
@@ -40,7 +40,7 @@ pub fn gen_raw<F>() -> F where F: Float + FromPrimitive + Rand {
 /// Result will always be in range 0.0 - 1.0.
 #[inline]
 pub fn gen<F>(n: F, randomness: f32) -> F
-where F: Float + Rand + FromPrimitive + Show {
+where F: Float + Rand + FromPrimitive + Debug {
     let (zero, one): (F, F) = (Float::zero(), Float::one());
     assert!(n >= zero && n <= one, "Gaussian::gen : given `n` ({:?}) must \
             be a percentage between 0 and 1.", n);
@@ -58,7 +58,7 @@ where F: Float + Rand + FromPrimitive + Show {
 /// Gen gaussian value mapped to a range.
 #[inline]
 pub fn gen_map<F>(n: F, randomness: f32, min_range: F, max_range: F) -> F
-where F: Float + Rand + FromPrimitive + Show {
+where F: Float + Rand + FromPrimitive + Debug {
     let (zero, one): (F, F) = (Float::zero(), Float::one());
     let perc = map_range(n, min_range, max_range, zero, one);
     map_range(gen(perc, randomness), zero, one, min_range, max_range)
