@@ -11,8 +11,6 @@ extern crate rand;
 extern crate "rustc-serialize" as rustc_serialize;
 extern crate time;
 
-pub use envelope::Envelope;
-pub use envelope::Point as EnvPoint;
 pub use epsilon::{
     Epsilon,
     epsilon,
@@ -52,11 +50,9 @@ pub use vec::{
     TakeOnly,
 };
 
-pub mod envelope;
 pub mod epsilon;
 pub mod factorisation;
 pub mod fps;
-pub mod gaussian;
 pub mod iter;
 pub mod math;
 pub mod signal;
