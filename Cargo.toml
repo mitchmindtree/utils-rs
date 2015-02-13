@@ -1,12 +1,17 @@
 [package]
 
-name = "utils"
-version = "0.0.1"
+name = "mindtree_utils"
+description = "Miscellaneous utilities from the sleeve of mindtree."
+version = "0.1.1"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
+readme = "README.md"
+keywords = ["utils", "math", "iterator"]
+license = "MIT"
+repository = "https://github.com/mitchmindtree/utils-rs.git"
+homepage = "https://github.com/mitchmindtree/utils-rs"
+
 
 [dependencies]
 rand = "0.1.2"
 rustc-serialize = "0.2.12"
-
-[dependencies.time]
-git = "https://github.com/rust-lang/time"
+time = "0.1.17"
