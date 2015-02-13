@@ -2,7 +2,7 @@
 
 name = "mindtree_utils"
 description = "Miscellaneous utilities from the sleeve of mindtree."
-version = "0.1.1"
+version = "0.1.2"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 readme = "README.md"
 keywords = ["utils", "math", "iterator"]
@@ -10,6 +10,8 @@ license = "MIT"
 repository = "https://github.com/mitchmindtree/utils-rs.git"
 homepage = "https://github.com/mitchmindtree/utils-rs"
 
+[lib]
+name = "utils"
 
 [dependencies]
 rand = "0.1.2"
