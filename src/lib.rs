@@ -5,7 +5,7 @@
 //!
 //!
 
-#![feature(core, io, std_misc)]
+#![feature(core, old_io, std_misc)]
 
 extern crate rand;
 extern crate "rustc-serialize" as rustc_serialize;
