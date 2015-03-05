@@ -50,7 +50,7 @@ impl Fps {
 }
 
 const BILLION: f64 = 1_000_000_000.0;
-type DeltaSecs = f64;
+pub type DeltaSecs = f64;
 
 /// Convert nanoseconds to seconds.
 #[inline]
