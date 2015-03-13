@@ -22,7 +22,7 @@ pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
 /// Floors value.
 #[inline]
 pub fn fast_floor<F: Float + FromPrimitive + ToPrimitive>(f: F) -> i64 {
-    return if f > FromPrimitive::from_int(0).unwrap() {
+    return if f > FromPrimitive::from_isize(0).unwrap() {
         f.to_i64().unwrap()
     } else {
         f.to_i64().unwrap() - Int::one()

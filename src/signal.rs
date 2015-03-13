@@ -162,7 +162,7 @@ impl<F: Float + rand::Rand + FromPrimitive + ToPrimitive> Signal<F> {
     /// Get saw wave signal result at val.
     #[inline]
     pub fn get_saw(&self) -> F {
-        self.get_result((math::fmod((self.val * self.freq / self.x), Float::one())) * FromPrimitive::from_int(-2).unwrap() + FromPrimitive::from_int(1).unwrap())
+        self.get_result((math::fmod((self.val * self.freq / self.x), Float::one())) * FromPrimitive::from_isize(-2).unwrap() + FromPrimitive::from_isize(1).unwrap())
     }
     
     /// Get square wave signal result at val.
