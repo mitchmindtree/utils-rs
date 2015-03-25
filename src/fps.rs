@@ -5,7 +5,7 @@
 //!
 //!
 
-use std::old_io::timer::sleep;
+use std::thread::sleep;
 use std::time::duration::Duration;
 use time;
 

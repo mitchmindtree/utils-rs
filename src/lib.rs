@@ -5,10 +5,10 @@
 //!
 //!
 
-#![feature(core, old_io, std_misc)]
+#![feature(alloc, core, std_misc, thread_sleep)]
 
 extern crate rand;
-extern crate "rustc-serialize" as rustc_serialize;
+extern crate rustc_serialize;
 extern crate time;
 
 pub use epsilon::{
@@ -50,6 +50,7 @@ pub use vec::{
     TakeOnly,
 };
 
+pub mod channel;
 pub mod epsilon;
 pub mod factorisation;
 pub mod fps;
