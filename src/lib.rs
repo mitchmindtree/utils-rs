@@ -26,10 +26,7 @@ pub use factorisation::{
 pub use fps::{
     Fps,
 };
-pub use iter::{
-    SampleOn,
-    ZipPrev,
-};
+pub use iter::SampleOn;
 pub use math::{
     clamp,
     fast_floor,
