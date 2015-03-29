@@ -15,5 +15,5 @@ name = "utils"
 
 [dependencies]
 rand = "*"
-rustc-serialize = "=0.3.7"
+rustc-serialize = "*"
 time = "*"
