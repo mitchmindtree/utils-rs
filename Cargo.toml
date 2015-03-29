@@ -2,7 +2,7 @@
 
 name = "mindtree_utils"
 description = "Miscellaneous utilities from the sleeve of mindtree."
-version = "0.1.6"
+version = "0.1.7"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 readme = "README.md"
 keywords = ["utils", "math", "iterator"]

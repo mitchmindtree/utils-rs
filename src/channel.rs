@@ -13,11 +13,11 @@ pub mod last {
     use std::sync::{Arc, TryLockError, Mutex};
 
     /// For sending the latest value.
-    pub struct Sender<T> {
+    pub struct Sender<T: Send> {
         data: UnsafeCell<Arc<UnsafeCell<Arc<Mutex<Option<T>>>>>>,
     }
 
-    impl<T> Clone for Sender<T> {
+    impl<T: Send> Clone for Sender<T> {
         fn clone(&self) -> Sender<T> {
             let new_data_ptr = unsafe { (*self.data.get()).clone() };
             Sender {
@@ -83,12 +83,12 @@ pub mod last {
     }
 
     /// For receiving the latest value if there has been an update.
-    pub struct Receiver<T> {
+    pub struct Receiver<T: Send> {
         data: UnsafeCell<Arc<Mutex<Option<T>>>>,
     }
 
     /// We need an unsafe implementation of Send because of the UnsafeCell.
-    unsafe impl<T> Send for Receiver<T> {}
+    unsafe impl<T: Send> Send for Receiver<T> {}
 
     /// The different kinds of possible receive errors.
     pub enum RecvError {
@@ -170,11 +170,11 @@ pub mod last_map {
     use std::sync::{Arc, TryLockError, Mutex};
 
     /// A clonable Sender of a key and value pair.
-    pub struct Sender<K, V> {
+    pub struct Sender<K: Send, V: Send> {
         data: UnsafeCell<Arc<UnsafeCell<Arc<Mutex<HashMap<K, Option<V>>>>>>>,
     }
 
-    impl<K, V> Clone for Sender<K, V> {
+    impl<K: Send, V: Send> Clone for Sender<K, V> {
         fn clone(&self) -> Sender<K, V> {
             let new_data_ptr = unsafe { (*self.data.get()).clone() };
             Sender {
@@ -246,7 +246,7 @@ pub mod last_map {
     }
 
     /// The receiver of the HashMap elements.
-    pub struct Receiver<K, V> {
+    pub struct Receiver<K: Send, V: Send> {
         data: UnsafeCell<Arc<Mutex<HashMap<K, Option<V>>>>>,
     }
 
