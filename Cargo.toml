@@ -2,7 +2,7 @@
 
 name = "mindtree_utils"
 description = "Miscellaneous utilities from the sleeve of mindtree."
-version = "0.1.8"
+version = "0.1.9"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 readme = "README.md"
 keywords = ["utils", "math", "iterator"]
@@ -14,6 +14,7 @@ homepage = "https://github.com/mitchmindtree/utils-rs"
 name = "utils"
 
 [dependencies]
+num = "*"
 rand = "*"
 rustc-serialize = "*"
 time = "*"

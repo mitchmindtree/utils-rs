@@ -5,13 +5,12 @@
 //!
 //!
 
-use std::thread::sleep;
-use std::time::duration::Duration;
+use std::thread::sleep_ms;
 use time;
 
 /// A signal that returns delta time at a rate so that
 /// there are `fps` frames per seconds.
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub struct Fps {
     fps: f64,
     last_ns: u64,
@@ -68,7 +67,8 @@ impl Iterator for Fps {
         }
         else {
             if !self.high_priority {
-                sleep(Duration::nanoseconds((frame_ns - dt_ns) as i64));
+                // NOTE: Should sleep in nanoseconds and not convert to milliseconds!
+                sleep_ms(((frame_ns - dt_ns) as u32) / 1_000_000);
             }
             let mut t_ns = time::precise_time_ns();
             let mut dt_ns = self.get_dt_ns(t_ns);

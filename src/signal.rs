@@ -5,7 +5,7 @@
 //!
 //!
 
-use std::num::{Float, FromPrimitive, ToPrimitive};
+use num::{Float, NumCast};
 use rand;
 use math;
 
@@ -33,24 +33,24 @@ pub struct Signal<F> {
 }
 
 /// Times two pi for most methods in 'Signal' implementations.
-fn times_two_pi<F>(f: F) -> F where F: Float + FromPrimitive {
-    use std::f32::consts::PI_2;
-    f * FromPrimitive::from_f32(PI_2).unwrap()
+fn times_two_pi<F>(f: F) -> F where F: Float {// + FromPrimitive {
+    use std::f64::consts::PI_2;
+    f * F::from(PI_2).unwrap()
 }
 
 /// Get random() mapped from -1.0 to 1.0 for 'Signal::get_noise'.
-fn get_rand_signal<F: Float + rand::Rand + FromPrimitive>() -> F {
+fn get_rand_signal<F: Float + rand::Rand>() -> F {
     let r: F = rand::random();
-    r * FromPrimitive::from_f32(2.0).unwrap() - FromPrimitive::from_f32(1.0).unwrap()
+    r * F::from(2.0f64).unwrap() - F::from(1.0f64).unwrap()
 }
 
 /// Ported implementation of `_slang_library_noise1()` for our generic noise walk!
 #[inline]
-pub fn noise_walk<F: Float + FromPrimitive>(phase: F) -> F {
-    let uno: F = Float::one();
-    let i0: i64 = math::fast_floor(phase);
+pub fn noise_walk<F: Float>(phase: F) -> F {
+    let uno: F = F::one();
+    let i0: i64 = NumCast::from(phase.floor()).unwrap();
     let i1: i64 = i0 + 1;
-    let x0: F = phase - FromPrimitive::from_i64(i0).unwrap();
+    let x0: F = phase - F::from(i0).unwrap();
     let x1: F = x0 - uno;
     let x12d: F = x1 * x1;
     let x02d: F = x0 * x0;
@@ -58,30 +58,30 @@ pub fn noise_walk<F: Float + FromPrimitive>(phase: F) -> F {
     let t0: F = uno - x02d;
     let t0a: F = t0 * t0;
     let g1: f32 = math::grad1(
-        math::get_perm_val((i0 & 0xff) as usize) as i64, x0.to_f32().unwrap());
-    let n0: F = t0a * t0a * FromPrimitive::from_f32(g1).unwrap(); 
+        math::get_perm_val((i0 & 0xff) as usize) as i64, NumCast::from(x0).unwrap());
+    let n0: F = t0a * t0a * F::from(g1).unwrap(); 
     let t1a: F = t1 * t1;
     let g2: f32 = math::grad1(
-        math::get_perm_val((i1 & 0xff) as usize) as i64, x1.to_f32().unwrap());
-    let n1: F = t1a * t1a * FromPrimitive::from_f32(g2).unwrap();
+        math::get_perm_val((i1 & 0xff) as usize) as i64, NumCast::from(x1).unwrap());
+    let n1: F = t1a * t1a * F::from(g2).unwrap();
     let n0pn1: F = n0 + n1;
-    let quarter: F = FromPrimitive::from_f32(0.25f32).unwrap();
+    let quarter: F = F::from(0.25f32).unwrap();
     quarter * n0pn1
 }
 
-impl<F: Float + rand::Rand + FromPrimitive + ToPrimitive> Signal<F> {
+impl<F: Float + rand::Rand> Signal<F> {
 
     /// Constructor for Signal
     #[inline]
     pub fn new(val: F) -> Signal<F> {
         Signal {
             val: val,
-            x: Float::one(),
-            y: Float::zero(),
-            grad: Float::zero(),
-            bez_depth: Float::zero(),
-            freq: Float::one(),
-            amp: Float::one(),
+            x: F::one(),
+            y: F::zero(),
+            grad: F::zero(),
+            bez_depth: F::zero(),
+            freq: F::one(),
+            amp: F::one(),
         }
     }
 
@@ -133,10 +133,10 @@ impl<F: Float + rand::Rand + FromPrimitive + ToPrimitive> Signal<F> {
     /// Get signal with bezier curve.
     #[inline]
     pub fn get_bezier(&self) -> F {
-        let y1: F = Signal::get_y1(self.y, Float::one());
+        let y1: F = Signal::get_y1(self.y, F::one());
         let y2: F = y1 + self.bez_depth * y1;
         let relative_val: F = self.val / self.x;
-        let ya: F = Signal::get_bezier_pt(Float::zero(), y2, relative_val);
+        let ya: F = Signal::get_bezier_pt(F::zero(), y2, relative_val);
         let yb: F = Signal::get_bezier_pt(y2, self.y, relative_val);
         Signal::get_bezier_pt(ya, yb, relative_val)
     }
@@ -162,7 +162,7 @@ impl<F: Float + rand::Rand + FromPrimitive + ToPrimitive> Signal<F> {
     /// Get saw wave signal result at val.
     #[inline]
     pub fn get_saw(&self) -> F {
-        self.get_result((math::fmod((self.val * self.freq / self.x), Float::one())) * FromPrimitive::from_isize(-2).unwrap() + FromPrimitive::from_isize(1).unwrap())
+        self.get_result((math::fmod((self.val * self.freq / self.x), F::one())) * F::from(-2).unwrap() + F::from(1).unwrap())
     }
     
     /// Get square wave signal result at val.

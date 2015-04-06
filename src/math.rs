@@ -5,28 +5,15 @@
 ///
 ///
 
+use num::Float;
+use num::PrimInt as Int;
 use std::mem;
-use std::num::{
-    Float,
-    FromPrimitive,
-    Int,
-    ToPrimitive,
-};
+use std::num::{FromPrimitive, ToPrimitive};
 
 /// Clamp a value to a range.
 #[inline]
 pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
     if val < min { min } else { if val > max { max } else { val } }
-}
-
-/// Floors value.
-#[inline]
-pub fn fast_floor<F: Float + FromPrimitive + ToPrimitive>(f: F) -> i64 {
-    return if f > F::zero() {
-        f.to_i64().unwrap()
-    } else {
-        f.to_i64().unwrap() - 1
-    }
 }
 
 /// Models the CPP fmod function.
@@ -91,8 +78,8 @@ pub fn remainder<F: Float + FromPrimitive + ToPrimitive>(numer: F, denom: F) -> 
 #[inline]
 pub fn modulo<I: Int>(a: I, b: I) -> I {
     match a % b {
-        r if (r > Int::zero() && b < Int::zero())
-          || (r < Int::zero() && b > Int::zero()) => (r + b),
+        r if (r > I::zero() && b < I::zero())
+          || (r < I::zero() && b > I::zero()) => (r + b),
         r                                         => r,
     }
 }

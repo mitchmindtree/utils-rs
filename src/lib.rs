@@ -5,8 +5,9 @@
 //!
 //!
 
-#![feature(alloc, core, std_misc, thread_sleep)]
+#![feature(alloc, core)]
 
+extern crate num;
 extern crate rand;
 extern crate rustc_serialize;
 extern crate time;
@@ -29,7 +30,6 @@ pub use fps::{
 pub use iter::SampleOn;
 pub use math::{
     clamp,
-    fast_floor,
     fmod,
     grad1,
     in_range,
