@@ -5,8 +5,6 @@
 //!
 //!
 
-#![feature(alloc, core)]
-
 extern crate num;
 extern crate rand;
 extern crate rustc_serialize;
@@ -31,7 +29,6 @@ pub use iter::SampleOn;
 pub use math::{
     clamp,
     fmod,
-    grad1,
     in_range,
     lerp,
     map_range,
@@ -39,20 +36,20 @@ pub use math::{
     remainder,
     wrap,
 };
+pub use noise_walk::noise_walk;
 pub use signal::{
-    noise_walk,
     Signal,
 };
 pub use vec::{
     TakeOnly,
 };
 
-pub mod channel;
 pub mod epsilon;
 pub mod factorisation;
 pub mod fps;
 pub mod iter;
 pub mod math;
+mod noise_walk;
 pub mod signal;
 pub mod vec;
 

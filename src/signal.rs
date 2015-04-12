@@ -5,9 +5,10 @@
 //!
 //!
 
+use math;
+use noise_walk::noise_walk;
 use num::{Float, NumCast};
 use rand;
-use math;
 
 /// Signal generic struct for simplifying dsp signal generation.
 /// Signal should be able to handle any floating point primitive.
@@ -34,39 +35,14 @@ pub struct Signal<F> {
 
 /// Times two pi for most methods in 'Signal' implementations.
 fn times_two_pi<F>(f: F) -> F where F: Float {// + FromPrimitive {
-    use std::f64::consts::PI_2;
-    f * F::from(PI_2).unwrap()
+    use std::f64::consts::PI;
+    f * F::from(PI * 2.0).unwrap()
 }
 
 /// Get random() mapped from -1.0 to 1.0 for 'Signal::get_noise'.
 fn get_rand_signal<F: Float + rand::Rand>() -> F {
     let r: F = rand::random();
     r * F::from(2.0f64).unwrap() - F::from(1.0f64).unwrap()
-}
-
-/// Ported implementation of `_slang_library_noise1()` for our generic noise walk!
-#[inline]
-pub fn noise_walk<F: Float>(phase: F) -> F {
-    let uno: F = F::one();
-    let i0: i64 = NumCast::from(phase.floor()).unwrap();
-    let i1: i64 = i0 + 1;
-    let x0: F = phase - F::from(i0).unwrap();
-    let x1: F = x0 - uno;
-    let x12d: F = x1 * x1;
-    let x02d: F = x0 * x0;
-    let t1: F = uno - x12d;        
-    let t0: F = uno - x02d;
-    let t0a: F = t0 * t0;
-    let g1: f32 = math::grad1(
-        math::get_perm_val((i0 & 0xff) as usize) as i64, NumCast::from(x0).unwrap());
-    let n0: F = t0a * t0a * F::from(g1).unwrap(); 
-    let t1a: F = t1 * t1;
-    let g2: f32 = math::grad1(
-        math::get_perm_val((i1 & 0xff) as usize) as i64, NumCast::from(x1).unwrap());
-    let n1: F = t1a * t1a * F::from(g2).unwrap();
-    let n0pn1: F = n0 + n1;
-    let quarter: F = F::from(0.25f32).unwrap();
-    quarter * n0pn1
 }
 
 impl<F: Float + rand::Rand> Signal<F> {
