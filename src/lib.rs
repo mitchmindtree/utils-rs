@@ -44,6 +44,7 @@ pub use vec::{
     TakeOnly,
 };
 
+mod chain;
 pub mod epsilon;
 pub mod factorisation;
 pub mod fps;
