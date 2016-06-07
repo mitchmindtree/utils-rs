@@ -5,7 +5,7 @@
 //!
 //!
 
-use std::thread::sleep_ms;
+use std;
 use time;
 
 /// A signal that returns delta time at a rate so that
@@ -68,7 +68,8 @@ impl Iterator for Fps {
         else {
             if !self.high_priority {
                 // NOTE: Should sleep in nanoseconds and not convert to milliseconds!
-                sleep_ms(((frame_ns - dt_ns) as u32) / 1_000_000);
+                let ms = ((frame_ns - dt_ns) as u64) / 1_000_000;
+                std::thread::sleep(std::time::Duration::from_millis(ms));
             }
             let mut t_ns = time::precise_time_ns();
             let mut dt_ns = self.get_dt_ns(t_ns);

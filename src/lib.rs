@@ -7,7 +7,6 @@
 
 extern crate num;
 extern crate rand;
-extern crate rustc_serialize;
 extern crate time;
 
 pub use epsilon::{
@@ -37,9 +36,6 @@ pub use math::{
     wrap,
 };
 pub use noise_walk::noise_walk;
-pub use signal::{
-    Signal,
-};
 pub use vec::{
     TakeOnly,
 };
@@ -51,6 +47,4 @@ pub mod fps;
 pub mod iter;
 pub mod math;
 mod noise_walk;
-pub mod signal;
 pub mod vec;
-
